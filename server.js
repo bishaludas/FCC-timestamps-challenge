@@ -23,19 +23,45 @@ app.get("/api/hello", function (req, res) {
   res.json({ greeting: "hello API" });
 });
 
-app.get("/api/:date", function (req, res) {
-  let param = req.params.date;
-  let date = new Date(param);
-  if (!param.includes("-")) {
-    console.log("unix given");
-    let unixDate = parseInt(param);
-    date = new Date(unixDate);
+app.get("/api", function (req, res) {
+  // An empty date parameter should return the current time
+  try {
+    let date = new Date();
+
+    let timestamp = date.toUTCString();
+    let unix = date.getTime();
+
+    res.json({ unix: unix, utc: timestamp });
+  } catch (error) {
+    // Handle if the input date string is invalid
+    res.json({ error: "Invalid Date" });
   }
+});
 
-  let timestamp = date.toUTCString();
-  let unix = date.getTime();
+app.get("/api/:date", function (req, res) {
+  try {
+    let param = req.params.date;
+    let date;
+    // Handle unix time
+    if (!param.includes("-")) {
+      console.log("unix given");
+      let unixDate = parseInt(param);
+      if (isNaN(unixDate)) {
+        throw "Invalid Date";
+      }
+      date = new Date(unixDate);
+    } else {
+      date = new Date(param);
+    }
 
-  res.json({ unix: unix, utc: timestamp });
+    let timestamp = date.toUTCString();
+    let unix = date.getTime();
+
+    res.json({ unix: unix, utc: timestamp });
+  } catch (error) {
+    // Handle if the input date string is invalid
+    res.json({ error: "Invalid Date" });
+  }
 });
 
 // listen for requests :)
