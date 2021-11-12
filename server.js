@@ -52,6 +52,9 @@ app.get("/api/:date", function (req, res) {
       date = new Date(unixDate);
     } else {
       date = new Date(param);
+      if (date == "Invalid Date") {
+        throw "Invalid Date";
+      }
     }
 
     let timestamp = date.toUTCString();
