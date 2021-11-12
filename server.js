@@ -43,7 +43,7 @@ app.get("/api/:date", function (req, res) {
     let param = req.params.date;
     let date;
     // Handle unix time
-    if (!param.includes("-")) {
+    if (!param.includes("-") && !param.includes(" ")) {
       console.log("unix given");
       let unixDate = parseInt(param);
       if (isNaN(unixDate)) {
